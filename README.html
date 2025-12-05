@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Cards Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --deep-space: #0a0a12;
+            --dark-space: #121220;
+            --bg-card: #0f0f1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0d0;
+            --text-muted: #a0a0b0;
+            
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff00ff;
+            --neon-blue: #0066ff;
+            --neon-purple: #9d00ff;
+            --neon-orange: #ff7700;
+            --neon-yellow: #ffee00;
+            --neon-green: #0aff0a;
+            
+            /* UPDATED: New color variables */
+            --neon-anime-blue: #00AFFF;
+            --neon-movie-gold: #D4AF37;
+            --neon-sport-green: #39FF14;
+            --neon-anime-primary: #EAF9FF;
+            --neon-games-yellow: #F5FF00;
+            --neon-manhua: #5A00D6;
+            
+            --glass-bg: rgba(20, 20, 40, 0.7);
+            --glass-border: rgba(100, 100, 255, 0.2);
+            
+            --font-primary: 'Orbitron', sans-serif;
+            --font-secondary: 'Rajdhani', sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            
+            --radius-sm: 8px;
+            --radius-md: 20px;
+            --radius-lg: 30px;
+            
+            --glow-cyan: 0 0 10px rgba(0, 243, 255, 0.7);
+            --glow-magenta: 0 0 10px rgba(255, 0, 255, 0.7);
+            --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            
+            --transition-normal: 0.3s ease;
+            --trans-fast: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --trans-smooth: 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* NEW: Keep original button variables for all except manga/manhua */
+            --watch-btn-height: 40px; /* Original value */
+            --watch-btn-padding: 10px 15px; /* Original value */
+            --watch-btn-radius: 15px;
+            --watch-btn-font-size: 0.8rem; /* Original value */
+            --watch-btn-font-weight: 900; /* Original value - bold but not extra bold */
+            --watch-btn-gap: 10px;
+            
+            /* NEW: Special variables for manga and manhua only */
+            --manga-btn-font-size: 0.95rem; /* Larger font for manga/manhua */
+            --manga-btn-font-weight: 1000; /* Extra bold for manga/manhua */
+            --manga-btn-height: 45px; /* Slightly taller for manga/manhua */
+            --manga-btn-padding: 12px 18px; /* More padding for manga/manhua */
+        }
+
+        body {
+            background-color: var(--deep-space);
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+        .demo-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, var(--neon-anime-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .demo-header p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+            max-width: 1200px;
+        }
+
+        .square-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+            max-width: 1200px;
+        }
+
+        @media (min-width: 768px) {
+            .content-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+            .square-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+        }
+
+        .card {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 2 / 3;
+            border: 1px solid var(--glass-border);
+            transition: var(--trans-smooth);
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            max-width: 300px;
+            -webkit-tap-highlight-color: transparent;
+            will-change: transform;
+        }
+
+        .square-card {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            border: 1px solid var(--glass-border);
+            transition: var(--trans-smooth);
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            max-width: 250px;
+            -webkit-tap-highlight-color: transparent;
+            will-change: transform;
+        }
+
+        .card:hover,
+        .square-card:hover { 
+            transform: scale(1.05) translateY(-8px); 
+            z-index: 2; 
+            transition: transform var(--trans-smooth), box-shadow var(--trans-smooth);
+        }
+
+        .card[data-type="anime"]:hover { 
+            border-color: var(--neon-anime-primary); 
+            box-shadow: 0 0 25px rgba(234, 249, 255, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="series"]:hover { 
+            border-color: var(--neon-anime-blue); 
+            box-shadow: 0 0 25px rgba(0, 175, 255, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="movie"]:hover { 
+            border-color: var(--neon-movie-gold); 
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="manga"]:hover { 
+            border-color: var(--neon-orange); 
+            box-shadow: 0 0 25px rgba(255, 119, 0, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="manhua"]:hover { 
+            border-color: var(--neon-manhua); 
+            box-shadow: 0 0 25px rgba(90, 0, 214, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="comics"]:hover { 
+            border-color: var(--neon-orange); 
+            box-shadow: 0 0 25px rgba(255, 119, 0, 0.5), var(--card-shadow); 
+        }
+
+        .card[data-type="sports"]:hover { 
+            border-color: var(--neon-sport-green); 
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.5), var(--card-shadow); 
+        }
+
+        .square-card[data-type="games"]:hover { 
+            border-color: var(--neon-games-yellow); 
+            box-shadow: 0 0 25px rgba(245, 255, 0, 0.5), var(--card-shadow); 
+        }
+
+        .card-img,
+        .square-img {
+            width: 100%; 
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .card:hover .card-img,
+        .square-card:hover .square-img { 
+            opacity: 0.7; 
+            transform: scale(1.15); 
+        }
+
+        .card-overlay {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 70%, transparent 100%);
+            padding: 20px 15px;
+            transform: translateY(10px);
+            transition: transform var(--trans-smooth);
+        }
+
+        .square-overlay {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 70%, transparent 100%);
+            padding: 15px 12px;
+            transform: translateY(10px);
+            transition: transform var(--trans-smooth);
+        }
+        
+        .card:hover .card-overlay,
+        .square-card:hover .square-overlay { 
+            transform: translateY(0); 
+        }
+
+        .card-badges {
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            right: 10px;
+            display: flex; 
+            justify-content: space-between;
+            align-items: flex-start;
+            transform: translateZ(0);
+            will-change: opacity, transform;
+            transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .card:hover .card-badges,
+        .square-card:hover .card-badges {
+            opacity: 0;
+            transform: translateY(-15px);
+            pointer-events: none;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(8, 8, 15, 0.92);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateZ(0);
+            will-change: transform, opacity;
+        }
+
+        .badge.manga {
+            background: rgba(20, 10, 5, 0.92);
+            color: var(--neon-orange);
+            border: 1px solid rgba(255, 119, 0, 0.4);
+            box-shadow: 0 0 6px rgba(255, 119, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.manhua {
+            background: rgba(20, 5, 30, 0.92);
+            color: var(--neon-manhua);
+            border: 1px solid rgba(90, 0, 214, 0.4);
+            box-shadow: 0 0 6px rgba(90, 0, 214, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.anime {
+            background: rgba(10, 20, 30, 0.92);
+            color: var(--neon-anime-primary);
+            border: 1px solid rgba(234, 249, 255, 0.4);
+            box-shadow: 0 0 6px rgba(234, 249, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.series {
+            background: rgba(5, 15, 30, 0.92);
+            color: var(--neon-anime-blue);
+            border: 1px solid rgba(0, 175, 255, 0.4);
+            box-shadow: 0 0 6px rgba(0, 175, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.movie {
+            background: rgba(25, 20, 5, 0.92);
+            color: var(--neon-movie-gold);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 6px rgba(212, 175, 55, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.sports {
+            background: rgba(5, 20, 10, 0.92);
+            color: var(--neon-sport-green);
+            border: 1px solid rgba(57, 255, 20, 0.4);
+            box-shadow: 0 0 6px rgba(57, 255, 20, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.games {
+            background: rgba(25, 25, 5, 0.92);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.new {
+            background: rgba(5, 20, 10, 0.92);
+            color: var(--neon-green);
+            border: 1px solid rgba(10, 255, 10, 0.4);
+            box-shadow: 0 0 6px rgba(10, 255, 10, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.ongoing {
+            background: rgba(20, 15, 5, 0.92);
+            color: var(--neon-yellow);
+            border: 1px solid rgba(255, 238, 0, 0.4);
+            box-shadow: 0 0 6px rgba(255, 238, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge.final {
+            background: rgba(20, 5, 10, 0.92);
+            color: var(--neon-magenta);
+            border: 1px solid rgba(255, 0, 255, 0.4);
+            box-shadow: 0 0 6px rgba(255, 0, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title,
+        .square-title { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+            line-height: 1.2; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-align: start;
+        }
+
+        .card-title[dir="rtl"],
+        .square-title[dir="rtl"] {
+            text-align: right;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .card-meta { 
+            font-size: 0.75rem; 
+            color: var(--text-muted); 
+        }
+
+        .square-meta { 
+            display: none;
+        }
+
+        /* Original card actions for all types */
+        .card[data-type="anime"] .card-actions,
+        .card[data-type="series"] .card-actions,
+        .card[data-type="movie"] .card-actions,
+        .card[data-type="sports"] .card-actions,
+        .card[data-type="manga"] .card-actions,
+        .card[data-type="manhua"] .card-actions,
+        .card[data-type="comics"] .card-actions {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 100%;
+            padding: 0 15px;
+            display: flex;
+            gap: var(--watch-btn-gap);
+            opacity: 1;
+            transition: var(--trans-smooth);
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row-reverse;
+        }
+        
+        /* NEW: Original action button styles for all cards (except manga/manhua) */
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--watch-btn-padding);
+            height: var(--watch-btn-height);
+            border-radius: var(--watch-btn-radius);
+            font-weight: var(--watch-btn-font-weight); /* Original: 900 */
+            font-size: var(--watch-btn-font-size); /* Original: 0.8rem */
+            text-transform: uppercase;
+            background-color: var(--neon-anime-blue);
+            color: var(--deep-space);
+            border: none;
+            box-shadow: 0 0 10px var(--neon-anime-blue);
+            transition: all var(--trans-smooth);
+            cursor: pointer;
+            font-family: var(--font-mono);
+            flex: 0 0 calc(48% - var(--watch-btn-gap)/2);
+            -webkit-tap-highlight-color: transparent;
+            letter-spacing: 0.5px; /* Original spacing */
+            /* Remove text shadow for original style */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* SPECIAL: Thicker text only for manga and manhua buttons */
+        .card[data-type="manga"] .action-button,
+        .card[data-type="manhua"] .action-button,
+        .card[data-type="comics"] .action-button {
+            font-weight: var(--manga-btn-font-weight); /* Extra bold: 1000 */
+            font-size: var(--manga-btn-font-size); /* Larger: 0.95rem */
+            height: var(--manga-btn-height); /* Taller: 45px */
+            padding: var(--manga-btn-padding); /* More padding: 12px 18px */
+            letter-spacing: 0.8px; /* Slightly more spacing */
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3); /* Text shadow for depth */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-synthesis: weight; /* Force font weight synthesis */
+        }
+
+        /* Original: Anime action button */
+        .card[data-type="anime"] .action-button {
+            background-color: var(--neon-anime-primary);
+            box-shadow: 0 0 10px var(--neon-anime-primary);
+            color: #0a0a12;
+        }
+
+        /* Original: Movie action button */
+        .card[data-type="movie"] .action-button {
+            background-color: var(--neon-movie-gold);
+            box-shadow: 0 0 10px var(--neon-movie-gold);
+        }
+
+        /* Special: Manhua action button with thicker text */
+        .card[data-type="manhua"] .action-button {
+            background-color: var(--neon-manhua);
+            box-shadow: 0 0 10px var(--neon-manhua);
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Stronger shadow for white text */
+        }
+
+        /* Special: Manga action button with thicker text */
+        .card[data-type="manga"] .action-button,
+        .card[data-type="comics"] .action-button {
+            background-color: var(--neon-orange);
+            box-shadow: 0 0 10px var(--neon-orange);
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Stronger shadow for white text */
+        }
+
+        /* Original: Sports action button */
+        .card[data-type="sports"] .action-button {
+            background-color: var(--neon-sport-green);
+            box-shadow: 0 0 10px var(--neon-sport-green);
+        }
+
+        /* Original: Games and apps action button */
+        .square-card[data-type="games"] .action-button {
+            background-color: var(--neon-games-yellow);
+            box-shadow: 0 0 10px var(--neon-games-yellow);
+            color: #0a0a12;
+        }
+
+        /* Original hover effects for all buttons */
+        .action-button:hover {
+            background-color: var(--text-primary);
+            box-shadow: 0 0 20px var(--neon-anime-blue), 0 0 8px var(--text-primary);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .card[data-type="anime"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-anime-primary), 0 0 8px var(--text-primary);
+        }
+
+        .card[data-type="movie"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-movie-gold), 0 0 8px var(--text-primary);
+        }
+
+        .card[data-type="manhua"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-manhua), 0 0 8px var(--text-primary);
+        }
+
+        .card[data-type="manga"] .action-button:hover,
+        .card[data-type="comics"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-orange), 0 0 8px var(--text-primary);
+        }
+
+        .card[data-type="sports"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-sport-green), 0 0 8px var(--text-primary);
+        }
+
+        .square-card[data-type="games"] .action-button:hover {
+            box-shadow: 0 0 20px var(--neon-games-yellow), 0 0 8px var(--text-primary);
+        }
+
+        /* Original icons for all buttons */
+        .action-button[data-action="read"]::before {
+            content: '';
+            display: inline-block;
+            width: 16px; /* Original size */
+            height: 16px;
+            margin-right: 8px; /* Original spacing */
+            background-image: url('https://iili.io/2sSvLPf.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform var(--trans-smooth);
+        }
+
+        /* Special: Larger icons for manga/manhua buttons */
+        .card[data-type="manga"] .action-button[data-action="read"]::before,
+        .card[data-type="manhua"] .action-button[data-action="read"]::before,
+        .card[data-type="comics"] .action-button[data-action="read"]::before {
+            width: 18px; /* Slightly larger for manga/manhua */
+            height: 18px;
+            margin-right: 10px; /* More spacing for manga/manhua */
+        }
+
+        .action-button[data-action="read"]:hover::before {
+            transform: scale(1.2);
+        }
+
+        .action-button[data-action="play"]::before {
+            content: '\f04b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px; /* Original spacing */
+            font-size: 0.9em; /* Original size */
+            transition: transform var(--trans-smooth);
+        }
+
+        /* Special: Larger icons for manga/manhua buttons */
+        .card[data-type="manga"] .action-button[data-action="play"]::before,
+        .card[data-type="manhua"] .action-button[data-action="play"]::before,
+        .card[data-type="comics"] .action-button[data-action="play"]::before {
+            margin-right: 10px; /* More spacing for manga/manhua */
+            font-size: 1em; /* Slightly larger for manga/manhua */
+        }
+
+        .action-button[data-action="play"]:hover::before {
+            transform: scale(1.2);
+        }
+
+        .action-button[data-action="download"]::before {
+            content: '\f019';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px; /* Original spacing */
+            font-size: 0.9em; /* Original size */
+            transition: transform var(--trans-smooth);
+        }
+
+        /* Special: Larger icons for manga/manhua buttons */
+        .card[data-type="manga"] .action-button[data-action="download"]::before,
+        .card[data-type="manhua"] .action-button[data-action="download"]::before,
+        .card[data-type="comics"] .action-button[data-action="download"]::before {
+            margin-right: 10px; /* More spacing for manga/manhua */
+            font-size: 1em; /* Slightly larger for manga/manhua */
+        }
+
+        .action-button[data-action="download"]:hover::before {
+            transform: scale(1.2);
+        }
+
+        .se-badge {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            height: var(--watch-btn-height);
+            border-radius: var(--watch-btn-radius);
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(10, 10, 20, 0.85);
+            color: var(--text-primary);
+            border: 1px solid rgba(0, 175, 255, 0.3);
+            font-family: var(--font-mono);
+            flex: 0 0 calc(48% - var(--watch-btn-gap)/2);
+            cursor: default;
+            user-select: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            text-align: center;
+            line-height: 1;
+            gap: 4px;
+        }
+
+        .card[data-type="anime"] .se-badge {
+            border: 1px solid rgba(234, 249, 255, 0.3);
+        }
+
+        .season-episode-text {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: font-size 0.2s ease;
+        }
+
+        .empty-space {
+            flex: 0 0 calc(48% - var(--watch-btn-gap)/2);
+            visibility: hidden;
+        }
+
+        .vertical-badges {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 0 0 calc(48% - var(--watch-btn-gap)/2);
+        }
+
+        .chapter-badge {
+            display: flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            gap: 6px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            height: 28px;
+        }
+
+        .new-chapter-badge {
+            background: rgba(5, 15, 10, 0.9);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 6px rgba(10, 255, 10, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .prev-chapter-badge {
+            background: rgba(10, 10, 15, 0.9);
+            color: var(--text-muted);
+            border: 1px solid rgba(100, 100, 120, 0.5);
+        }
+
+        .ripple-dot-container {
+            position: relative;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .ripple-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            z-index: 3;
+            animation: pulse 1.4s infinite ease-in-out;
+            box-shadow: 0 0 4px var(--neon-green);
+        }
+
+        .ripple {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid rgba(10, 255, 10, 0.6);
+            animation: rippleAnimation 1.6s infinite;
+        }
+
+        .ripple:nth-child(1) { animation-delay: 0s; }
+        .ripple:nth-child(2) { animation-delay: 0.4s; }
+        .ripple:nth-child(3) { animation-delay: 0.8s; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes rippleAnimation {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        .gray-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .chapter-text {
+            flex: 1;
+            text-align: right;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+        }
+
+        .chapter-label {
+            font-size: 0.45rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .chapter-number {
+            font-size: 0.55rem;
+            color: inherit;
+        }
+
+        @media (max-width: 480px) {
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .square-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            
+            .card-actions {
+                flex-wrap: wrap;
+            }
+            
+            .action-button, .se-badge, .empty-space, .vertical-badges {
+                flex: 1 1 calc(50% - var(--watch-btn-gap));
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .card-actions {
+                flex-direction: column;
+            }
+            
+            .action-button, .se-badge, .empty-space, .vertical-badges {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+        }
+
+        .section {
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section-title {
+            font-size: 1.5rem; 
+            margin-bottom: 20px;
+            border-left: 4px solid var(--neon-anime-blue);
+            padding-left: 15px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+
+        .section-title.anime {
+            border-left: 4px solid var(--neon-anime-primary);
+        }
+
+        .section-title.manga {
+            border-left: 4px solid var(--neon-orange);
+        }
+
+        .section-title.manhua {
+            border-left: 4px solid var(--neon-manhua);
+        }
+
+        .section-title.movie {
+            border-left: 4px solid var(--neon-movie-gold);
+        }
+
+        .section-title.sports {
+            border-left: 4px solid var(--neon-sport-green);
+        }
+
+        .section-title.games {
+            border-left: 4px solid var(--neon-games-yellow);
+        }
+        
+        .instagram-card .square-overlay {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        
+        .instagram-card .square-title {
+            text-align: center;
+            width: 100%;
+            font-size: 1.3rem;
+            margin-bottom: 0;
+            color: #FFFFFF;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>ANIME CARDS COLLECTION</h1>
+        <p>RTL Support for Arabic Titles</p>
+        <p style="font-size: 0.9rem; color: var(--neon-anime-primary);">Automatic text direction detection</p>
+    </div>
+
+    <!-- Manga Section -->
+    <section class="section">
+        <div class="section-title manga">مانجا</div>
+        <div class="content-grid">
+            <!-- One Piece Manga Card -->
+            <article class="card" data-type="manga" data-new-chapter="1146" data-prev-chapter="1145">
+                <div class="card-badges">
+                    <span class="badge manga">مانجا</span>
+                    <span class="badge ongoing">مستمر</span>
+                </div>
+                <img src="https://iili.io/2bBJVFn.jpg" alt="One Piece Manga Cover" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="read">قراءة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">One Piece</h3>
+                    <div class="card-meta">
+                        <span>مغامرة / فانتازيا</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Manhua Section -->
+    <section class="section">
+        <div class="section-title manhua">مانهوا</div>
+        <div class="content-grid">
+            <!-- Manhua Card -->
+            <article class="card" data-type="manhua" data-new-chapter="256" data-prev-chapter="255">
+                <div class="card-badges">
+                    <span class="badge manhua">مانهوا</span>
+                    <span class="badge ongoing">مستمر</span>
+                </div>
+                <img src="https://iili.io/fIWoilf.jpg" alt="Manhua Cover" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="read">قراءة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title" dir="rtl">ملك الطريق</h3>
+                    <div class="card-meta">
+                        <span>أكشن / خيال</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Anime Section -->
+    <section class="section">
+        <div class="section-title anime">انمي</div>
+        <div class="content-grid">
+            <!-- Kimetsu no Yaiba Anime Card -->
+            <article class="card" data-type="anime" data-season="1" data-episode="90">
+                <div class="card-badges">
+                    <span class="badge anime">انمي</span>
+                    <span class="badge new">جديد</span>
+                </div>
+                <img src="https://iili.io/2bSLPI4.jpg" alt="Kimetsu no Yaiba Anime Poster" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">Kimetsu no Yaiba</h3>
+                    <div class="card-meta">
+                        <span>أكشن / خارق للطبيعة</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Movies Section -->
+    <section class="section">
+        <div class="section-title movie">أفلام</div>
+        <div class="content-grid">
+            <!-- Alexandrian Movie Card -->
+            <article class="card" data-type="movie">
+                <div class="card-badges">
+                    <span class="badge movie">فيلم</span>
+                    <span class="badge new">جديد</span>
+                </div>
+                <img src="https://iili.io/fBu8wva.jpg" alt="Alexandrian Movie Poster" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                    <div class="empty-space"></div>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">الاسكندراني</h3>
+                    <div class="card-meta">
+                        <span>دراما / تاريخي</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Series Section -->
+    <section class="section">
+        <div class="section-title">مسلسلات</div>
+        <div class="content-grid">
+            <!-- Al-Maddah Series Card -->
+            <article class="card" data-type="series" data-season="5" data-episode="10">
+                <div class="card-badges">
+                    <span class="badge series">مسلسل</span>
+                    <span class="badge ongoing">مستمر</span>
+                </div>
+                <img src="https://iili.io/fBxUcOl.jpg" alt="Al-Maddah Series Poster" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">المداح الجزء الخامس</h3>
+                    <div class="card-meta">
+                        <span>دراما / تاريخي</span>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Test Card with Large Numbers -->
+            <article class="card" data-type="series" data-season="12" data-episode="150">
+                <div class="card-badges">
+                    <span class="badge series">مسلسل</span>
+                    <span class="badge final">انتهت</span>
+                </div>
+                <img src="https://via.placeholder.com/300x450/111/00f3ff?text=LONG+EPISODES" alt="Test Series Poster" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">Long Episode Series</h3>
+                    <div class="card-meta">
+                        <span>اختبار / عرض</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Test Card with Very Large Numbers -->
+            <article class="card" data-type="series" data-season="25" data-episode="999">
+                <div class="card-badges">
+                    <span class="badge series">مسلسل</span>
+                    <span class="badge ongoing">مستمر</span>
+                </div>
+                <img src="https://via.placeholder.com/300x450/111/ff00ff?text=VERY+LONG" alt="Very Long Series Poster" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">Very Long Series</h3>
+                    <div class="card-meta">
+                        <span>اختبار / أرقام طويلة</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Sports Section -->
+    <section class="section">
+        <div class="section-title sports">رياضة</div>
+        <div class="content-grid">
+            <!-- Football Match Card -->
+            <article class="card" data-type="sports">
+                <div class="card-badges">
+                    <span class="badge sports">رياضة</span>
+                    <span class="badge new">مباشر</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Football Match" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                    <div class="empty-space"></div>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">مباراة نهائي الدوري</h3>
+                    <div class="card-meta">
+                        <span>كرة قدم / مباشر</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Basketball Match Card -->
+            <article class="card" data-type="sports">
+                <div class="card-badges">
+                    <span class="badge sports">رياضة</span>
+                    <span class="badge ongoing">مباشر</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Basketball Match" class="card-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="play">مشاهدة الآن</button>
+                    <div class="empty-space"></div>
+                </div>
+                <div class="card-overlay">
+                    <h3 class="card-title">مباراة كرة السلة</h3>
+                    <div class="card-meta">
+                        <span>كرة سلة / مباشر</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Games and Apps Section -->
+    <section class="section">
+        <div class="section-title games">ألعاب وتطبيقات</div>
+        <div class="square-grid">
+            <!-- Game Card 1 -->
+            <article class="square-card" data-type="games">
+                <div class="card-badges">
+                    <span class="badge games">لعبة</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Game 1" class="square-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="download">تحميل</button>
+                </div>
+                <div class="square-overlay">
+                    <h3 class="square-title">Call of Duty Mobile</h3>
+                    <div class="square-meta"></div>
+                </div>
+            </article>
+
+            <!-- Game Card 2 -->
+            <article class="square-card" data-type="games">
+                <div class="card-badges">
+                    <span class="badge games">لعبة</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1618331833071-1c0c6ee3d19e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Game 2" class="square-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="download">تحميل</button>
+                </div>
+                <div class="square-overlay">
+                    <h3 class="square-title">PUBG Mobile</h3>
+                    <div class="square-meta"></div>
+                </div>
+            </article>
+
+            <!-- Instagram Card with title at the bottom -->
+            <article class="square-card instagram-card" data-type="games">
+                <div class="card-badges">
+                    <span class="badge games">تطبيق</span>
+                </div>
+                <img src="https://iili.io/fzLBGZG.jpg" alt="Instagram" class="square-img">
+                <div class="square-overlay">
+                    <h3 class="square-title">Instagram</h3>
+                    <div class="square-meta"></div>
+                </div>
+            </article>
+
+            <!-- App Card 1 -->
+            <article class="square-card" data-type="games">
+                <div class="card-badges">
+                    <span class="badge games">تطبيق</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="App 1" class="square-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="download">تحميل</button>
+                </div>
+                <div class="square-overlay">
+                    <h3 class="square-title">تطبيق الموسيقى</h3>
+                    <div class="square-meta"></div>
+                </div>
+            </article>
+
+            <!-- App Card 2 -->
+            <article class="square-card" data-type="games">
+                <div class="card-badges">
+                    <span class="badge games">تطبيق</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="App 2" class="square-img">
+                <div class="card-actions">
+                    <button class="action-button" data-action="download">تحميل</button>
+                </div>
+                <div class="square-overlay">
+                    <h3 class="square-title">تطبيق التحرير</h3>
+                    <div class="square-meta"></div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initSeasonEpisodeBadges();
+            initMangaComicsBadges();
+            initManhuaBadges();
+            detectAndSetTextDirection();
+            extractColorFromImages();
+            
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const action = this.getAttribute('data-action');
+                    const cardTitle = this.closest('.card, .square-card').querySelector('.card-title, .square-title').textContent;
+                    
+                    let actionText = '';
+                    switch(action) {
+                        case 'play':
+                            actionText = 'Playing';
+                            break;
+                        case 'read':
+                            actionText = 'Reading';
+                            break;
+                        case 'download':
+                            actionText = 'Downloading';
+                            break;
+                    }
+                    
+                    alert(`${actionText}: ${cardTitle}`);
+                });
+            });
+        });
+
+        function detectAndSetTextDirection() {
+            const arabicRegex = /[\u0600-\u06FF]/;
+            
+            document.querySelectorAll('.card-title, .square-title, .card-meta').forEach(element => {
+                const text = element.textContent;
+                if (arabicRegex.test(text)) {
+                    element.setAttribute('dir', 'rtl');
+                    
+                    const cardOverlay = element.closest('.card-overlay, .square-overlay');
+                    if (cardOverlay) {
+                        cardOverlay.style.textAlign = 'right';
+                    }
+                } else {
+                    element.setAttribute('dir', 'ltr');
+                }
+            });
+        }
+
+        function extractColorFromImages() {
+            document.querySelectorAll('.square-card[data-type="games"]').forEach(card => {
+                const badge = card.querySelector('.badge.games');
+                const img = card.querySelector('.square-img');
+                
+                let borderColor = 'rgba(255, 255, 255, 0.4)';
+                
+                if (img.alt.includes('Instagram') || card.querySelector('.square-title').textContent.includes('Instagram')) {
+                    borderColor = 'rgba(188, 42, 141, 0.7)';
+                } else if (img.alt.includes('Game') || card.querySelector('.square-title').textContent.includes('Game') || 
+                          card.querySelector('.square-title').textContent.includes('Call of Duty') || 
+                          card.querySelector('.square-title').textContent.includes('PUBG')) {
+                    borderColor = 'rgba(0, 175, 255, 0.7)';
+                } else if (img.alt.includes('تطبيق') || card.querySelector('.square-title').textContent.includes('تطبيق')) {
+                    borderColor = 'rgba(255, 165, 0, 0.7)';
+                }
+                
+                if (badge) {
+                    badge.style.borderColor = borderColor;
+                    badge.style.boxShadow = `0 0 6px ${borderColor}, 0 2px 8px rgba(0, 0, 0, 0.4)`;
+                }
+            });
+        }
+
+        function initSeasonEpisodeBadges() {
+            const cards = document.querySelectorAll('.card[data-type="series"], .card[data-type="anime"]');
+            
+            cards.forEach(card => {
+                const season = card.getAttribute('data-season');
+                const episode = card.getAttribute('data-episode');
+                const cardActions = card.querySelector('.card-actions');
+                
+                if (season && episode) {
+                    const badge = document.createElement('div');
+                    badge.className = 'se-badge';
+                    
+                    const seasonEpisodeText = document.createElement('div');
+                    seasonEpisodeText.className = 'season-episode-text';
+                    seasonEpisodeText.textContent = `الموسم ${season} الحلقة ${episode}`;
+                    seasonEpisodeText.setAttribute('dir', 'rtl');
+                    
+                    const totalLength = season.length + episode.length;
+                    let fontSize = '0.7rem';
+                    
+                    if (totalLength >= 4 && totalLength <= 5) {
+                        fontSize = '0.65rem';
+                    } else if (totalLength >= 6) {
+                        fontSize = '0.6rem';
+                    } else if (totalLength >= 8) {
+                        fontSize = '0.55rem';
+                    }
+                    
+                    seasonEpisodeText.style.fontSize = fontSize;
+                    
+                    badge.appendChild(seasonEpisodeText);
+                    cardActions.appendChild(badge);
+                }
+            });
+        }
+
+        function initMangaComicsBadges() {
+            const cards = document.querySelectorAll('.card[data-type="manga"], .card[data-type="comics"]');
+            
+            cards.forEach(card => {
+                const newChapter = card.getAttribute('data-new-chapter');
+                const prevChapter = card.getAttribute('data-prev-chapter');
+                const cardActions = card.querySelector('.card-actions');
+                
+                const verticalBadges = document.createElement('div');
+                verticalBadges.className = 'vertical-badges';
+                
+                if (newChapter) {
+                    const newChapterBadge = document.createElement('div');
+                    newChapterBadge.className = 'chapter-badge new-chapter-badge';
+                    
+                    const rippleContainer = document.createElement('div');
+                    rippleContainer.className = 'ripple-dot-container';
+                    
+                    for (let i = 1; i <= 3; i++) {
+                        const ripple = document.createElement('div');
+                        ripple.className = 'ripple';
+                        rippleContainer.appendChild(ripple);
+                    }
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'ripple-dot';
+                    rippleContainer.appendChild(dot);
+                    
+                    const chapterText = document.createElement('div');
+                    chapterText.className = 'chapter-text';
+                    
+                    const chapterLabel = document.createElement('span');
+                    chapterLabel.className = 'chapter-label';
+                    chapterLabel.textContent = 'الفصل';
+                    
+                    const chapterNumber = document.createElement('span');
+                    chapterNumber.className = 'chapter-number';
+                    chapterNumber.textContent = newChapter;
+                    
+                    chapterText.appendChild(chapterLabel);
+                    chapterText.appendChild(chapterNumber);
+                    
+                    newChapterBadge.appendChild(rippleContainer);
+                    newChapterBadge.appendChild(chapterText);
+                    
+                    verticalBadges.appendChild(newChapterBadge);
+                }
+                
+                if (prevChapter) {
+                    const prevChapterBadge = document.createElement('div');
+                    prevChapterBadge.className = 'chapter-badge prev-chapter-badge';
+                    
+                    const dotContainer = document.createElement('div');
+                    dotContainer.className = 'ripple-dot-container';
+                    
+                    const grayDot = document.createElement('div');
+                    grayDot.className = 'gray-dot';
+                    
+                    dotContainer.appendChild(grayDot);
+                    
+                    const chapterText = document.createElement('div');
+                    chapterText.className = 'chapter-text';
+                    
+                    const chapterLabel = document.createElement('span');
+                    chapterLabel.className = 'chapter-label';
+                    chapterLabel.textContent = 'الفصل';
+                    
+                    const chapterNumber = document.createElement('span');
+                    chapterNumber.className = 'chapter-number';
+                    chapterNumber.textContent = prevChapter;
+                    
+                    chapterText.appendChild(chapterLabel);
+                    chapterText.appendChild(chapterNumber);
+                    
+                    prevChapterBadge.appendChild(dotContainer);
+                    prevChapterBadge.appendChild(chapterText);
+                    
+                    verticalBadges.appendChild(prevChapterBadge);
+                }
+                
+                cardActions.appendChild(verticalBadges);
+            });
+        }
+
+        function initManhuaBadges() {
+            const cards = document.querySelectorAll('.card[data-type="manhua"]');
+            
+            cards.forEach(card => {
+                const newChapter = card.getAttribute('data-new-chapter');
+                const prevChapter = card.getAttribute('data-prev-chapter');
+                const cardActions = card.querySelector('.card-actions');
+                
+                const verticalBadges = document.createElement('div');
+                verticalBadges.className = 'vertical-badges';
+                
+                if (newChapter) {
+                    const newChapterBadge = document.createElement('div');
+                    newChapterBadge.className = 'chapter-badge new-chapter-badge';
+                    
+                    newChapterBadge.style.background = 'rgba(5, 15, 10, 0.9)';
+                    newChapterBadge.style.color = 'var(--neon-green)';
+                    newChapterBadge.style.border = '1px solid var(--neon-green)';
+                    newChapterBadge.style.boxShadow = '0 0 6px rgba(10, 255, 10, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3)';
+                    
+                    const rippleContainer = document.createElement('div');
+                    rippleContainer.className = 'ripple-dot-container';
+                    
+                    for (let i = 1; i <= 3; i++) {
+                        const ripple = document.createElement('div');
+                        ripple.className = 'ripple';
+                        ripple.style.border = '1px solid rgba(10, 255, 10, 0.6)';
+                        rippleContainer.appendChild(ripple);
+                    }
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'ripple-dot';
+                    dot.style.background = 'var(--neon-green)';
+                    dot.style.boxShadow = '0 0 4px var(--neon-green)';
+                    rippleContainer.appendChild(dot);
+                    
+                    const chapterText = document.createElement('div');
+                    chapterText.className = 'chapter-text';
+                    
+                    const chapterLabel = document.createElement('span');
+                    chapterLabel.className = 'chapter-label';
+                    chapterLabel.textContent = 'الفصل';
+                    chapterLabel.style.color = 'var(--neon-green)';
+                    
+                    const chapterNumber = document.createElement('span');
+                    chapterNumber.className = 'chapter-number';
+                    chapterNumber.textContent = newChapter;
+                    chapterNumber.style.color = 'var(--neon-green)';
+                    
+                    chapterText.appendChild(chapterLabel);
+                    chapterText.appendChild(chapterNumber);
+                    
+                    newChapterBadge.appendChild(rippleContainer);
+                    newChapterBadge.appendChild(chapterText);
+                    
+                    verticalBadges.appendChild(newChapterBadge);
+                }
+                
+                if (prevChapter) {
+                    const prevChapterBadge = document.createElement('div');
+                    prevChapterBadge.className = 'chapter-badge prev-chapter-badge';
+                    
+                    prevChapterBadge.style.background = 'rgba(10, 10, 15, 0.9)';
+                    prevChapterBadge.style.color = 'var(--text-muted)';
+                    prevChapterBadge.style.border = '1px solid rgba(100, 100, 120, 0.5)';
+                    
+                    const dotContainer = document.createElement('div');
+                    dotContainer.className = 'ripple-dot-container';
+                    
+                    const grayDot = document.createElement('div');
+                    grayDot.className = 'gray-dot';
+                    grayDot.style.backgroundColor = 'var(--text-muted)';
+                    
+                    dotContainer.appendChild(grayDot);
+                    
+                    const chapterText = document.createElement('div');
+                    chapterText.className = 'chapter-text';
+                    
+                    const chapterLabel = document.createElement('span');
+                    chapterLabel.className = 'chapter-label';
+                    chapterLabel.textContent = 'الفصل';
+                    chapterLabel.style.color = 'var(--text-muted)';
+                    
+                    const chapterNumber = document.createElement('span');
+                    chapterNumber.className = 'chapter-number';
+                    chapterNumber.textContent = prevChapter;
+                    chapterNumber.style.color = 'var(--text-muted)';
+                    
+                    chapterText.appendChild(chapterLabel);
+                    chapterText.appendChild(chapterNumber);
+                    
+                    prevChapterBadge.appendChild(dotContainer);
+                    prevChapterBadge.appendChild(chapterText);
+                    
+                    verticalBadges.appendChild(prevChapterBadge);
+                }
+                
+                cardActions.appendChild(verticalBadges);
+            });
+        }
+    </script>
+</body>
+</html>
